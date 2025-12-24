@@ -1,20 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "https://zgnqetqkxxsiswtrgcgd.supabase.co",
-      "images.unsplash.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "zgnqetqkxxsiswtrgcgd.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
   experimental: {
     serverComponentsExternalPackages: ["pdf-parse"],
     serverActions: true,
   },
-  api: {
-    bodyParser: true,
-  },
 };
 
 module.exports = nextConfig;
-
