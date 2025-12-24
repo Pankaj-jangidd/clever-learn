@@ -6,11 +6,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const YOUTUBE_API_KEY = 'AIzaSyCXRDfQzcosEwLSKfzBwnhWzB3-2US50hs';
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY!;
 
-const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY,
-});
+// Lazy-load OpenAI client to prevent build-time errors
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    throw new Error('OPENAI_API_KEY is not configured');
+  }
+  return new OpenAI({ apiKey });
+}
 
 function extractVideoId(url: string): string | null {
   try {
@@ -48,7 +52,7 @@ async function giveSummary(yturl: string, prompt: string): Promise<string | { er
       throw new Error(transcript.error);
     }
 
-    const chatCompletion = await openai.chat.completions.create({
+    const chatCompletion = await getOpenAIClient().chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         { role: 'user', content: transcript as string },
